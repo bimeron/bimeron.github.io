@@ -12,9 +12,12 @@
     "serve": "node scripts/serve.mjs _site"
   },
   "dependencies": {
-    "@mermaid-js/mermaid-cli": "12.2.0",
+    "@mermaid-js/mermaid-cli": "11.17.1",
     "cheerio": "1.2.0",
     "github-markdown-css": "5.9.0",
     "puppeteer": "25.18.1"
+  },
+  "overrides": {
+    "katex": "^0.19.1"
   }
 }
