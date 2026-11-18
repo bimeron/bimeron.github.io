@@ -1,0 +1,20 @@
+{
+  "name": "bimeron.github.io",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node src/build.mjs",
+    "test": "node --test",
+    "check": "node scripts/check-site.mjs _site",
+    "serve": "node scripts/serve.mjs _site"
+  },
+  "dependencies": {
+    "@mermaid-js/mermaid-cli": "12.2.0",
+    "cheerio": "1.2.0",
+    "github-markdown-css": "5.9.0",
+    "puppeteer": "25.18.1"
+  }
+}
