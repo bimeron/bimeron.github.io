@@ -27,7 +27,15 @@ export async function renderDiagram(browser, source, id) {
       backgroundColor: 'transparent',
       fontEmbed: false,
       svgId: `${id}-${variant}`,
-      mermaidConfig: { theme, themeVariables: { fontFamily: FONT_FAMILY } },
+      mermaidConfig: {
+        theme,
+        themeVariables: { fontFamily: FONT_FAMILY },
+        // Labels as SVG text with explicit line breaks only. HTML labels re-wrap in the
+        // visitor's browser when its font is wider than the one used at build time.
+        htmlLabels: false,
+        markdownAutoWrap: false,
+        flowchart: { htmlLabels: false, curve: 'basis', padding: 16 },
+      },
     });
     result[variant] = new TextDecoder().decode(data);
   }

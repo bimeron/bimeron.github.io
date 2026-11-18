@@ -27,6 +27,8 @@ const FORBIDDEN = [
   ['highlight-source-mermaid', 'unrendered Mermaid block'],
   ['data-diagram=', 'unfilled diagram placeholder'],
   ['markdown-heading', 'GitHub heading wrapper'],
+  // HTML labels are laid out again with the visitor's fonts and can wrap differently.
+  ['<foreignObject', 'HTML label in a diagram'],
 ];
 
 const MAX_DESCRIPTION = 160;
