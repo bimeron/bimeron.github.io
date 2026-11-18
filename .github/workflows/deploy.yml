@@ -1,0 +1,44 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  # Started by bimeron/.github after changes to the profile and community files.
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag or commit of bimeron/.github to build from.
+        type: string
+        default: main
+  # Fallback in case a dispatch from bimeron/.github is missed.
+  schedule:
+    - cron: '17 3 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      source-ref: ${{ inputs.ref || 'main' }}
+      pages-artifact: true
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5

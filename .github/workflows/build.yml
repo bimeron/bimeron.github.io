@@ -1,0 +1,78 @@
+name: Build
+
+# Reusable build: renders the site from bimeron/.github and uploads it as an artifact.
+
+on:
+  workflow_call:
+    inputs:
+      source-ref:
+        description: Branch, tag or commit of bimeron/.github to build from.
+        type: string
+        default: main
+      pages-artifact:
+        description: Upload a GitHub Pages artifact instead of a regular one.
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build site
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Check out bimeron/.github
+        uses: actions/checkout@v7
+        with:
+          repository: bimeron/.github
+          ref: ${{ inputs.source-ref }}
+          path: source
+          # Full history: sitemap lastmod dates come from the last commit of each file.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      # Ubuntu 24.04 blocks unprivileged user namespaces, which the Chrome sandbox needs.
+      - name: Allow the Chrome sandbox
+        run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        run: npm run build -- --source source
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
+          BING_SITE_VERIFICATION: ${{ vars.BING_SITE_VERIFICATION }}
+
+      - name: Check site
+        run: npm run check
+
+      - name: Upload Pages artifact
+        if: inputs.pages-artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+      - name: Upload artifact
+        if: ${{ !inputs.pages-artifact }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: site
+          path: _site
+          retention-days: 7
