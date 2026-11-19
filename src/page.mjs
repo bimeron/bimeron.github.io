@@ -27,7 +27,6 @@ export function inlineJson(value) {
  * @param {string} options.body Page content HTML.
  * @param {{ path: string, title: string }[]} options.nav Footer navigation.
  * @param {string} options.githubUrl Organization URL on GitHub.
- * @param {{ url: string, label: string } | null} [options.source] Source file of the page.
  * @param {boolean} [options.home] Home page: no site header, JSON-LD and verification tags.
  * @param {boolean} [options.noindex]
  * @param {object | null} [options.jsonLd]
@@ -42,7 +41,6 @@ export function renderPage({
   body,
   nav,
   githubUrl,
-  source = null,
   home = false,
   noindex = false,
   jsonLd = null,
@@ -100,9 +98,6 @@ export function renderPage({
     })
     .concat(`<a href="${e(githubUrl)}">GitHub</a>`)
     .join('\n');
-  const sourceLine = source
-    ? `<p>This page is generated from <a href="${e(source.url)}">${e(source.label)}</a>.</p>\n`
-    : '';
 
   return `<!doctype html>
 <html lang="en">
@@ -118,7 +113,7 @@ ${body}
 <nav aria-label="Site">
 ${navLinks}
 </nav>
-${sourceLine}</footer>
+</footer>
 </div>
 </body>
 </html>
