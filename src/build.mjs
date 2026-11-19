@@ -129,7 +129,6 @@ async function main() {
       body: page.$.html(),
       nav,
       githubUrl,
-      source: { url: new URL(page.source, blobBase).href, label: `${SITE.sourceRepo}/${page.source}` },
       home: isHome,
       jsonLd: isHome ? organizationJsonLd({ siteUrl, siteName, description: page.description, githubUrl }) : null,
       verification: {
